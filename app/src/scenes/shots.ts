@@ -18,7 +18,7 @@ export interface Shot { kind: string; lines: Line[]; start: number; end: number;
 export interface Bg { paper: number; grid: number; glow: number; gx: number; gy: number; stars: number; warm: number }
 export interface S {
   c: CanvasRenderingContext2D; g: CanvasRenderingContext2D; t: number; lt: number; sh: Shot; au: AudioData;
-  post: PostOverrides; bg: Bg; paper: boolean;
+  post: PostOverrides; bg: Bg; paper: boolean; shots?: Shot[];
 }
 type K = keyof typeof HEX;
 

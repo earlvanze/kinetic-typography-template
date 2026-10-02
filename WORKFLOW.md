@@ -145,3 +145,9 @@ short clips.
 - Slow first boots: `PDOOM_BOOT_TIMEOUT_MS`.
 - Scripting tip: `pkill -f <pattern>` / `pgrep -f` can match your own shell's command line and kill it. Find PIDs with
   `ps -eo pid,args | awk '/pattern/ && !/awk/'` and kill by PID.
+
+## Kinetic plate library (`app/src/scenes/kinetic/`)
+
+Before writing bespoke shots, reach for the plate library: `signs`, `maptype`, `strips`, `press`, `pixels`, `trajectory`,
+`skywrite`, `courses`, `document`, `tickets`, `detonate` (see `app/src/scenes/kinetic/README.md`). Each spans several lines
+and makes the words the objects. A plate per line with a caption row above/below a picture is a lyric video: avoid it.
