@@ -39,7 +39,7 @@ export function row(s: S, ws: Word[], fam: string, width: number, max: number, x
     const px = cx + wd / 2, py = y + (big ? 0 : ((CAP * size) - (CAP * sz)) / 2);
     xs.push(px - x);
     const dx = o.rot ? (px - x) * Math.cos(o.rot) - (px - x) : 0, dy = o.rot ? (px - x) * Math.sin(o.rot) : 0;
-    word(s, w, txt(w), big ? fam : famS, sz, px + dx, py + dy, { sc: t < w.start - 0.06 ? 1 : slam(w, t, big ? (o.from ?? 1.7) : 1.2), alpha: o.alpha, hot: o.hot, base: o.base, glow: big ? o.glow : 0, rot: o.rot, ghost: ghostA });
+    word(s, w, txt(w), big ? fam : famS, sz, px + dx, py + dy, { sc: t < w.start - 0.06 ? 1 : slam(w, t, big ? Math.min(o.from ?? 1.25, 1.3) : 1.1), alpha: o.alpha, hot: o.hot, base: o.base, glow: big ? o.glow : 0, rot: o.rot, ghost: ghostA });
     cx += wd + gapEm * size;
   });
   if ((o.anno ?? size >= 110) && !o.rot) {

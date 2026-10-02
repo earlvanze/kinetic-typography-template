@@ -30,7 +30,7 @@ export function cam(s: S, k: Cam) {
   applyCam(s.c, k2); applyCam(s.g, k2);
 }
 export const base = (s: S): K => (s.paper ? 'ink' : 'bone');
-export const hotK = (s: S): K => (s.paper ? 'blood' : 'signal');
+export const hotK = (s: S): K => (s.paper ? 'ink' : 'signal'); // on paper sung words stay solid ink (a mid-tone accent washes out at type sizes)
 
 /** Draw a word centred on (x, cap-centre y). Gold while sung (+ glow copy), ghost before, base after. */
 export function word(
