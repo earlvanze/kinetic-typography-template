@@ -1,0 +1,14 @@
+# lyrics.txt — exactly what is SUNG, in order, with [section] headers (intro, verse1, pre1, chorus1, bridge1, final1, outro1 …).
+# The section names drive the edit (app/src/project/script.ts SECTIONS). Lines starting with # are comments.
+# Prefer the ORIGINAL lyric text (e.g. the song-generation prompt) over a transcription. Spell out what is sung
+# (e.g. "do not" if the singer does not contract it).
+[intro]
+First line of the intro
+
+[verse1]
+A line of the first verse
+Another line of the first verse
+
+[chorus1]
+The hook line
+The second chorus line

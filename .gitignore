@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+# per-project artefacts (never commit audio, lyrics timing or renders)
+out/
+qa/
+data/
+audio/
+analysis/work/
+analysis/candidates/
+*.wav
+*.mp3
+*.m4a
+*.mp4
+.env
