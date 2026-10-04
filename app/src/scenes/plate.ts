@@ -6,7 +6,8 @@ import { FSPass, Layer2D } from '../engine/gl';
 import { clamp, pulse } from '../engine/util';
 import { LIBRARY, type Bg, type S, type Shot } from './shots';
 import { EXTRA } from '../project/shots';
-const SHOTS = { ...LIBRARY, ...EXTRA };
+import { KINETIC } from './kinetic/plates';
+const SHOTS = { ...LIBRARY, ...KINETIC, ...EXTRA };
 import { buildShots } from './director';
 import { drawPlate } from './plates2d';
 import { col } from './kit';
@@ -73,7 +74,7 @@ export default class Plate extends Scene {
       cx.setTransform(1, 0, 0, 1, 0, 0); const gr = cx.createLinearGradient(0, 0, 0, cx.canvas.height);
       gr.addColorStop(0, col(ka, al)); gr.addColorStop(1, col(kb, al)); cx.fillStyle = gr; cx.fillRect(0, 0, cx.canvas.width, cx.canvas.height);
     }
-    const s: S = { c: this.L.ctx, g: this.G.ctx, t, lt: t - sh.start, sh, au: audio, post, bg, paper: false };
+    const s: S = { c: this.L.ctx, g: this.G.ctx, t, lt: t - sh.start, sh, au: audio, post, bg, paper: false, shots: this.shots };
     if (sh.o.bg) Object.assign(bg, sh.o.bg); // per-shot background overrides (e.g. { paper: 1 } or a warmer dawn)
     s.paper = sh.kind === 'blueprint' || bg.paper >= 0.5;
     if (s.paper) { bg.paper = 1; }
