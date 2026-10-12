@@ -106,9 +106,37 @@ Hard rules:
 - **Timing-driven geometry**: tie events to words (`findW(l, /fly/i).start`), not to absolute seconds, so a re-timed take
   re-times the shot.
 
+## 5b. 2.5D shots (`scenes/d25.ts`)
+When a flat edit reads as a lyric video, put the words in space. `d25.ts` is a perspective camera over the same
+Canvas2D layers: glyphs are set on 3D planes (each glyph gets the local affine of the projection, so long words
+foreshorten correctly), extruded into solid slabs, and lit by the same signal/ember rules. Start from the library `fly`
+shot (`['fly', n]`, a corridor where each line's words fly in as blocks and the camera dollies one bay per line), then
+build bespoke ones from the parts:
+| part | what |
+|---|---|
+| `cam3`, `camAt(t, times, keys)`, `punch` | camera (x, y, z, yaw, pitch, roll, f); keyframes reached with outExpo after their time; shot-start punch |
+| `text3`, `flyLine`, `setRows` | extruded text on a plane; a whole lyric line as flying word-objects landing on their onsets (Swiss hierarchy kept) |
+| `box3`, `rect3`, `seg`, `poly`, `label3` | solid boxes (back-face culled, faces sorted), plane rectangles, clipped 3D lines, flat mono labels |
+| `slab3` + `standing` | words raised on a block (stamp / badge / sign) that drops onto the floor and can topple flat |
+| `panel3`, `mark3`, `floor`, `dust` | UI window on a plane, drawn ✓/✗, perspective grid floor, depth tokens for parallax |
+
+Conventions and lessons:
+- World units are pixels at the focal plane; **y points down, z into the screen; positive pitch looks DOWN**. A sign
+  error here leaves every "looking down" shot staring at empty sky: render a sheet before anything else.
+- `basis(yaw, pitch)`: `FACE` stands upright facing the camera, `FLOOR` lies flat with the text's top away from you.
+- Draw far → near. `box3` sorts its own faces and `flyLine` its words; you order the objects.
+- **Clear a line before the camera flies through it.** A camera dolly that passes through the previous line's words
+  produces frames of giant, cropped letters. Fade it out (`nx.start - 0.45 → nx.start - 0.3`) before the move.
+- Keep lyrics readable: modest yaw (≤ 0.25 rad) on sung words, set them where the camera lands, and check every line's
+  frame with `bun scripts/render.ts sheet --lines` (one frame per sung line, just after its last word starts).
+  `--cuts` only sees engine scene boundaries, not the director's shots.
+- Cost: every glyph × extrusion step is a `fillText`. Keep `steps` ≤ 12 and dust counts modest; a 3-minute 2.5D video
+  reviewed at half-res renders in about 9 minutes on a laptop GPU.
+
 ## 6. Iterate on contact sheets (cheap; CPU is fine)
 ```sh
 cd app && bun scripts/render.ts sheet --times 4,12.5,20 --cols 4 --out ../out/wip/s1.png    # or --cuts / --from A --to B --n 16
+bun scripts/render.ts sheet --lines --cols 6 --out ../out/wip/lines.png                                 # one frame per sung line
 bun scripts/render.ts stills --t 122.5 --out ../out/wip/stills                               # full-res frame to sample pixels
 ```
 Check every shot mid-phrase and on its last word for collisions, cropped words, empty frames, unreadable contrast and

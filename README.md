@@ -30,7 +30,7 @@ cd ~/videos/my-song/kinetic
 $EDITOR lyrics.txt                                # exactly what is sung, with [section] headers
 WHISPER_MODEL=~/models/ggml-medium.en.bin ./swap-audio.sh ~/music/my-song.wav
 $EDITOR app/src/project/{brand,palette,script,shots}.ts
-(cd app && bun scripts/render.ts sheet --cuts --cols 4 --out ../out/wip/sheet.png)   # look at it
+(cd app && bun scripts/render.ts sheet --lines --cols 6 --out ../out/wip/sheet.png)  # one frame per sung line
 ./review.sh v1                                    # → out/review/v1-half.mp4 (no blur, 960×540, fast)
 ./render-full.sh my-song-v1.mp4                   # final: motion blur, segments, mux, QA report
 ```
@@ -42,6 +42,7 @@ Live preview while editing: `cd app && bunx vite`, then open the page (scrub wit
 | `app/src/engine/` | the renderer: WebGL compositor, post (grain, bloom, CA), audio-reactive data, offline export |
 | `app/src/scenes/director.ts` | builds the edit from the lyric `[section]` tags; instrumental shots; holds that never cover the next line |
 | `app/src/scenes/shots.ts` | library compositions (`slam`, `anchor`, `stair`, `ledger`, `blueprint`, `tree`, `title`, `outro`, …) + helpers |
+| `app/src/scenes/d25.ts` | 2.5D: perspective camera, extruded words on 3D planes, boxes, grid floor, word slabs; library shot `fly` |
 | `app/src/scenes/typeset.ts` | Swiss-grid `row()` (big content words, light small words, ghost-in, annotation), `band()`, `snapVal()` |
 | `app/src/scenes/plates2d.ts` | graphic plates behind a shot: guilloché, ledger, blueprint, scope, engrave, ui, halftone, contour, terminal, stamps |
 | `app/src/project/` | **per video**: `brand.ts`, `palette.ts`, `script.ts` (the edit), `shots.ts` (bespoke compositions) |

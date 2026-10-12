@@ -2,6 +2,7 @@
 // one moving typographic composition: words are the material (walls, steps, doors, columns, branches), every
 // word lands on its sung onset, the sung word burns gold, and the camera holds-then-snaps between beats.
 import { BRAND } from '../project/brand';
+import * as D from './d25';
 import type { AudioData } from '../engine/audio';
 import { W, H } from '../engine/gl';
 import type { HEX } from '../engine/palette';
@@ -1231,8 +1232,31 @@ export function iconFor(c: CanvasRenderingContext2D, g: CanvasRenderingContext2D
   c.restore(); g.restore();
 }
 
+// =================================================================== 2.5D (scenes/d25.ts)
+/**
+ * FLY: a perspective corridor. Each line's words are extruded blocks that fly in and land on their onsets; the camera
+ * dollies forward one bay per line (the previous line clears before the camera passes through it). Options:
+ * from [x,y,z] (word fly-in offset), gap (bay depth), yaw (alternating line yaw), size (max type size), field (dust tokens).
+ */
+function fly(s: S) {
+  const { t, sh } = s;
+  const L = sh.lines, Z = sh.o.gap ?? 1500, FY = 420;
+  const times = [sh.start, ...L.map((l) => l.start - 0.28)];
+  const keys = [{ y: -140, z: -1500, yaw: 0.1, pitch: 0.05 }, ...L.map((_, i) => ({ x: i % 2 ? 60 : -60, y: -130, z: i * Z - 1250, yaw: i % 2 ? -0.04 : 0.08, pitch: 0.05, roll: i % 2 ? 0.015 : -0.015 }))];
+  const c = D.punch(s, D.camAt(t, times, keys, 0.7));
+  D.floor(s, c, FY, 1);
+  D.dust(s, c, sh.o.field ?? BRAND.field ?? ['·'], 30, sh.idx, 0.25);
+  for (let i = L.length - 1; i >= 0; i--) {
+    const l = L[i]!, nx = L[i + 1];
+    const gone = nx ? 1 - prog(t, nx.start - 0.45, nx.start - 0.3) : 1;
+    if (gone <= 0.01) continue;
+    const yaw = (sh.o.yaw ?? 0.12) * (i % 2 ? -1 : 1);
+    D.flyLine(s, c, l.words, [0, -20, i * Z + 120], D.basis(yaw, 0.02), sh.o.width ?? 1300, sh.o.size ?? 150, { alpha: gone, maxChars: sh.o.maxChars ?? 16, from: sh.o.from ?? (i % 2 ? [0, -900, 0] : [600, -200, 900]), depth: 46, spin: 0.9, tumble: 0.6 });
+  }
+}
+
 export const SHOTS: Record<string, (s: S) => void> = {
-  skill, trust,
+  skill, trust, fly,
   intro,
   slam: slamStack, anchor, stair, door, ledger, house, ceiling, blueprint, path, title, pillars, tree, serif, legacy,
   search, network, grid, clock, key: keyShot, generations, higher, outro,
