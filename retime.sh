@@ -6,7 +6,7 @@
 #   lite — analysis/timing_lite.py: caption-cue windows + vocal-band onset snapping (~±0.15 s); needs an .srt of the song
 #          (SRT=<file>, or the first of captions/*.srt, source/captions/*.srt). No ML weights, no network.
 #   ./retime.sh            re-time if stale        ./retime.sh --force    always
-#   ./retime.sh --check    exit 1 if stale         RETIME_MODE=full|lite  force a pipeline     NO_RETIME=1  skip (callers)
+#   ./retime.sh --check    exit 1 if stale         ./retime.sh --stamp    mark the current data as up to date         RETIME_MODE=full|lite  force a pipeline     NO_RETIME=1  skip (callers)
 # Reviewed per-line pins: analysis/timing-fixes.json (lite) or <take cache>/timing-fixes.json (full); see fix_timing.py.
 set -euo pipefail
 P=$(cd "$(dirname "$0")" && pwd); cd "$P"
@@ -20,6 +20,7 @@ INPUTS=(lyrics.txt "$M"); for f in sections.txt analysis/timing-fixes.json "${SR
 STAMP=$( (sha "${INPUTS[@]}" | cut -c1-64; echo "${RETIME_MODE:-auto}") | sha | cut -c1-16)
 CUR=$(cat data/.timing-stamp 2>/dev/null || true)
 fresh() { [ "$STAMP" = "$CUR" ] && [ -s data/lyrics.json ] && [ -s data/audio.json ]; }
+if [ "$ARG" = --stamp ]; then echo "$STAMP" > data/.timing-stamp; exit 0; fi   # swap-audio.sh: the data just built is current
 if [ "$ARG" = --check ]; then fresh && { echo "timing up to date"; exit 0; } || { echo "timing stale"; exit 1; }; fi
 if [ "$ARG" != --force ] && fresh; then exit 0; fi
 

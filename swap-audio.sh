@@ -43,4 +43,5 @@ if [ "$REDO" = --redo ] || [ ! -s "$D/lyrics.json" ] || [ ! -s "$D/audio.json" ]
 fi
 cp "$D/lyrics.json" "$D/audio.json" "$P/data/"; cp "$D/master.m4a" "$P/audio/master.m4a"
 mkdir -p "$A/work"; cp "$D/MASTER" "$D/MASTER.sha256" "$A/work/"
+NO_RETIME= "$P/retime.sh" --stamp || true   # this data is current for lyrics.txt + this master: review/render need not re-time
 echo "active take: $M  (cache $D)"; grep -h "weakly\|suspect" "$D/autocue.txt" "$D/check.txt" 2>/dev/null || true
