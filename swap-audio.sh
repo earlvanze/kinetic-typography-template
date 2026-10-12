@@ -17,6 +17,8 @@ if [ "${1:-}" = --list ]; then
 fi
 M=$(realpath "$1"); REDO=${2:-}
 KEY=$(sha256sum "$M" | cut -c1-12); D="$C/$KEY-$(basename "${M%.*}")"
+LYR_SHA=$( (cat "$D/lyrics.txt" 2>/dev/null || cat "$P/lyrics.txt") | { sha256sum 2>/dev/null || shasum -a 256; } | cut -c1-64)
+[ -s "$D/lyrics.json" ] && [ "$(cat "$D/LYRICS.sha256" 2>/dev/null)" != "$LYR_SHA" ] && { echo "lyrics changed since this take was timed: re-timing"; REDO=--redo; }
 if [ "$REDO" = --redo ] || [ ! -s "$D/lyrics.json" ] || [ ! -s "$D/audio.json" ]; then
   mkdir -p "$D"; echo "$M" > "$D/MASTER"; sha256sum "$M" > "$D/MASTER.sha256"
   cd "$A"; mkdir -p work
@@ -37,7 +39,7 @@ if [ "$REDO" = --redo ] || [ ! -s "$D/lyrics.json" ] || [ ! -s "$D/audio.json" ]
   [ -s "$D/timing-fixes.json" ] && python3 fix_timing.py "$D/timing-fixes.json"
   SECTIONS="${SECTIONS:-$(cat "$P/sections.txt")}" uv run python analyze.py 2>&1 | grep -v -i warn | tee "$D/analyze.txt"
   uv run python check.py | tee "$D/check.txt" | head -20
-  cp ../data/lyrics.json ../data/audio.json "$D/"
+  cp ../data/lyrics.json ../data/audio.json "$D/"; echo "$LYR_SHA" > "$D/LYRICS.sha256"
 fi
 cp "$D/lyrics.json" "$D/audio.json" "$P/data/"; cp "$D/master.m4a" "$P/audio/master.m4a"
 mkdir -p "$A/work"; cp "$D/MASTER" "$D/MASTER.sha256" "$A/work/"

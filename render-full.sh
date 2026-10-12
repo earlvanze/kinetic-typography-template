@@ -3,7 +3,7 @@
 # with the locked master, then QA. Re-runnable: finished segments are kept.
 #   ./render-full.sh <out-name.mp4> [fps=30] [segment-seconds=60] [max-samples=12]
 set -euo pipefail
-P=$(cd "$(dirname "$0")" && pwd); NAME=$1; FPS=${2:-30}; SEG=${3:-60}; MAXS=${4:-12}
+P=$(cd "$(dirname "$0")" && pwd); "$P/retime.sh"; NAME=$1; FPS=${2:-30}; SEG=${3:-60}; MAXS=${4:-12}
 M=$(cat "$P/analysis/work/MASTER")
 DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$M")
 BASE="${NAME%.mp4}"

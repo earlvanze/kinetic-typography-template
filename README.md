@@ -34,6 +34,11 @@ $EDITOR app/src/project/{brand,palette,script,shots}.ts
 ./review.sh v1                                    # → out/review/v1-half.mp4 (no blur, 960×540, fast)
 ./render-full.sh my-song-v1.mp4                   # final: motion blur, segments, mux, QA report
 ```
+**Automatic re-timing:** `review.sh` and `render-full.sh` run `./retime.sh` first. It rebuilds `data/lyrics.json` and
+`data/audio.json` whenever `lyrics.txt`, the master, `sections.txt`, the captions or `analysis/timing-fixes.json` change, using the
+full pipeline when whisper.cpp + `WHISPER_MODEL` are present, otherwise the model-free `analysis/timing_lite.py` (needs timed
+captions: `SRT=<file.srt>` or `captions/*.srt`; accuracy about ±0.15 s). `swap-audio.sh` also re-times a cached take when the lyric sheet changed.
+
 Live preview while editing: `cd app && bunx vite`, then open the page (scrub with the timeline).
 
 ## What's in the box
